@@ -80,4 +80,36 @@ In the header, the token MUST be preceeded by “Authorization: JWT “ + access
 25. Make a new django app to hold React and add it to installed apps:
     -> python manage.py startapp frontend
 
-26. In frontend make a templates/frontend/index.html and style.css file, which will act as the base template for React along with a regular Django rendered index view. In this particular template, Django template context processors are available to use, which can be incredibly useful if you want to control how React behaves from within settings.py. Let’s prepare it like a standard Django base template, for now.
+26. In frontend make a templates/frontend/index.html, style.css and urls.py file, which will act as the base template for React along with a regular Django rendered index view. In this particular template, Django template context processors are available to use, which can be incredibly useful if you want to control how React behaves from within settings.py. Let’s prepare it like a standard Django base template, for now.
+
+27. Before you start working with npm you need to change the configuration:
+    -> npm config set prefix "${APPDATA}/npm"
+
+28. Now start working on react by initializing npm:
+    -> npm init
+
+29. With our index.html ready and waiting, we have to figure out how to create and compile something for it to grab and present. This requires Babel and Webpack:
+    -> npm install --save-dev @babel/core@7.4.5 @babel/preset-env@7.4.5 @babel/preset-react@7.0.0
+    Babel takes the code we write in whatever we use and turns it into JavaScript browsers love. babel/preset-env is for modern Javascript ES6+ and babel/preset-react for JSX.
+
+30. To use our freshly installed Babel, we must create a .babelrc or babel.config.json file in the project root, next to package.json.
+
+31. Webpack is a bundler. It takes our modules (dependencies and custom code both) and converts them into static assets. This infographic from their website https://webpack.js.org does a good job of illustrating how it works:
+    -> npm install --save-dev webpack webpack-cli babel-loader
+        <!-- + babel-loader@8.0.6
+        + webpack-cli@3.3.4
+        + webpack@4.35.0 -->
+
+32. Create a webpack.config.js at the root next to packages.json.
+
+33. Now install react:
+    -> npm install --save react react-dom
+    <!-- + react@16.8.6
+    + react-dom@16.8.6 -->
+
+34. Added 
+        "scripts": {
+        "build": "webpack - config webpack.config.js",
+    to package.json
+
+35. 
