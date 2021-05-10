@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'rest_framework',
     # for react
     'frontend',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 # adding the rest framework 

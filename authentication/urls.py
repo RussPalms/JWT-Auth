@@ -1,8 +1,8 @@
 from django.urls import path
 from rest_framework_simplejwt import views as jwt_views
-# from .views import ObtainTokenPairWithColorView, CustomUserCreate, HelloWorldView, LogoutAndBlacklistRefreshTokenForUserView
+from .views import ObtainTokenPairWithColorView, CustomUserCreate, HelloWorldView, LogoutAndBlacklistRefreshTokenForUserView
 # can also be rewritten as 
-from .views import *
+# from .views import *
 
 urlpatterns = [
     # View + Serializer + URL = good to go.

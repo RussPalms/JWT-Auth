@@ -6,7 +6,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 # added after testing most of frontend
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from .serializers import MyTokenObtainPairSerializer, CustomUserSerializer
 
 class ObtainTokenPairWithColorView(TokenObtainPairView):
@@ -30,7 +29,7 @@ class CustomUserCreate(APIView):
             if user:
                 json = serializer.data
                 return Response(json, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # this is were we would start creating the patient post signin/signup page
 class HelloWorldView(APIView):
