@@ -25,7 +25,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('email', 'username', 'password')
-        extra_kwarg = {'password': {'write_only': True}}
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, valitated_data):
         password = valitated_data.pop('password', None)

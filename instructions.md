@@ -72,7 +72,8 @@
     -> curl --header "Content-Type: application/json" -X POST http://127.0.0.1:8000/api/token/obtain/ --data '{"email":"snaper@fookme.org","username":"sachyou","password":"eatmenow"}'
     -> curl --header "Content-Type: application/json" -X GET http://127.0.0.1:8000/api/hello/
     <!-- this is the access token -->
-    -> curl --header "Content-Type: application/json" --header "Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjIwNjE5NDY4LCJqdGkiOiJjNDk4Y2NlZGQ5NjY0NGRlYWFjNTQ2YjY1N2U5Nzc0ZiIsInVzZXJfaWQiOjQsImZhdl9jb2xvciI6IiJ9.iKLQdWXzKvON45cluHkzksNfHUHD-oicYEcwz3Zh3fk" -X GET http://127.0.0.1:8000/api/hello/
+    -> curl --header "Content-Type: application/json" -X POST http://127.0.0.1:8000/api/token/refresh/ --data '{"refresh":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYyMTg5MDM2MywianRpIjoiNTU2YzgxZTc4NGI1NDBiZmJhMTA5MTg0ZTBjNGZmMDciLCJ1c2VyX2lkIjo0LCJmYXZfY29sb3IiOiIifQ.XXVT3D5ysGCtTdZMJfqfX3UBM-oORKFOuwcIlIp2ic8"}'
+    -> curl --header "Content-Type: application/json" --header "Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjIwNjgxMTI3LCJqdGkiOiJjODc5NmIyNDJjYTM0MWY3YTFkZTVlNGE0NmViZjMxNCIsInVzZXJfaWQiOjQsImZhdl9jb2xvciI6IiJ9.2ZgZE7zDF7vl0tzCYMGIERHTBaz_kPln08jTCSGy7ks" -X GET http://127.0.0.1:8000/api/hello/
 
 24. First we logged new user Ichiro in, then tried a GET request on our protected endpoint. It’s still rejected, because we didn’t actually pass the token, even though we can see it with our naked eyes. It has to be passed in the header. This is why it’s key to remember that earlier in settings.py we set “JWT” in the AUTH_HEADER_TYPES. 
 In the header, the token MUST be preceeded by “Authorization: JWT “ + access token. Or whatever you set AUTH_HEADER_TYPES as. Otherwise, no dice. This will become important when we connect the frontend.
@@ -123,4 +124,38 @@ In the header, the token MUST be preceeded by “Authorization: JWT “ + access
 
 38. Two forms are needed for Login and Signup. Signup has username, email, and password fields while login only needs username and password.
 
-39.
+39. Within Javascript circles, there are two primary ways to GET/POST/UPDATE/DELETE/whatever data from/to a REST API: Axios and JavaScript’s included Fetch.
+
+40. POSTing to /api/user/create/ to create a userPOSTing to /api/token/obtain/ to login a user and obtain a JWT token pairPOSTing to /api/token/refresh/ to refresh the JWT token pairGETting from the protected /api/hello/ to see what the backend secretly has to say.
+
+41. Install Axios:
+    npm install --save axios
+
+42. Axios has two superpowers useful here. First, we can create a standalone instance with custom configurations that can be used throughout the website — this is where we’ll set it to send JWT headers. Second, we can make a custom interceptor for the new Axios instance. The interceptor lets us “do stuff” while handling the request — this is where we’ll handle refreshing tokens. Create a file within src/ called axiosApi.js. 
+
+43. Each time Axios gets a token, it stores the access_token in local storage. We initiate the creation of the Axios instance by getting that token. If there’s no token in local storage, don’t even worry about it for the header. It will be set every time a user logs in.
+
+44. Within our original login.js file, we can now improve handleSubmit to POST to the Django backend’s token creation endpoint /api/token/obtain/ and get a token pair. 
+
+45. Token pair in hand. Can we see the protected view yet? Nope. Nothing in React actually tries to get that info yet. Time for another React component. Make a file called hello.js in the components folder. Within this component we want to do only 1 thing: GET a message from a protected API endpoint on the backend, and display it. We will use our custom Axios instance again.
+
+46. Since we’re using a custom Webpack configuration, using async/await won’t work without some additional elbow grease. Right now, the console will show us a big red ReferenceError: regeneratorRuntime is not defined error and React will break. Googling around will lead you to various StackOverflow Q&As leading to the answer. Just add babel-polyfill to the entry line of webpack.config.js or import it. We had better install that package:
+    -> npm install --save-dev babel-polyfill
+
+47. First update npm:
+    -> npm update
+
+48. Now set babel-polyfill as the entry point in webpack.config.js.
+    <!-- old entry: 
+        path.resolve(__dirname, './src/index.js') 
+    -->
+
+49. We need to specify an empty list or tuple for authentication_classes in addition to setting permission_classes to convince DRF to open up a view to the public.
+
+50. So if a password doesn’t pass the password validator on the backed Serializer, it would send an error which we store in the state at state.errors.password and if that is present, it shows the error text. Otherwise it shows nothing.
+
+51. Create an API view for blacking out tokens.
+
+52. Next we need to add a button to our navbar to delete the localStorage tokens and to post the token to a blackout API view, which we will make shortly. This will go in App.js for now, but making a dedicated Nav component at this point also makes sense.
+
+53.

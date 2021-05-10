@@ -5,7 +5,10 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="{% static 'frontend/style.css' %}" />
-        <title>DRF + REACT = Winning the game</title>
+        {% comment %} this is to remove the default GET request for a favicon 
+        if you don't have one {% endcomment %}
+        <link rel="icon" href="data:;base64,=" />
+        <title>DRF + REACT = Ballz to the wallz fantastic</title>
     </head>
     <body>
         <div id="root" class="content">
