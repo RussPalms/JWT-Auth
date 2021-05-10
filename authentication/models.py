@@ -6,4 +6,3 @@ from django.contrib.auth.models import AbstractUser
 # User model attributes and functionalities such as username, password, and so on.
 class CustomUser(AbstractUser):
     fav_color = models.CharField(blank=True, max_length=120)
-

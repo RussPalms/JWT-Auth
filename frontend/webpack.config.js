@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require("webpack");
 
 module.exports = {
     mode: "development",
@@ -11,7 +10,7 @@ module.exports = {
         path: path.resolve(__dirname, "./static/frontend/public/"),
 
         // 127.0.0.1/static/frontend/public/ where files are served from
-        publicPath: "/static/frontend/public/",
+        publicPath: "./static/frontend/public/",
         filename: 'main.js', // the same one we imported in index.html
     },
     module: {

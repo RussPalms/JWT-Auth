@@ -175,7 +175,7 @@ STATIC_URL = '/static/'
 
 # this is one of the first things you need to do when 
 # creating a django project
-# STATICFILES_DIRS = (os.path.join(TEMPLATE_DIR, 'static'),)
+# STATICFILES_DIRS = (os.path.join('frontend/static'),)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

@@ -112,4 +112,5 @@ In the header, the token MUST be preceeded by “Authorization: JWT “ + access
         "build": "webpack - config webpack.config.js",
     to package.json
 
-35. 
+35. Now you can build:
+    -> npm run build

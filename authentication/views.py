@@ -8,7 +8,6 @@ from rest_framework.response import Response
 from .serializers import MyTokenObtainPairSerializer, CustomUserSerializer
 
 class ObtainTokenPairWithColorView(TokenObtainPairView):
-    permission_classes = (permissions.AllowAny,)
     serializer_class = MyTokenObtainPairSerializer
 
 # When you feed data to a model serializer like we are doing here, as long as the 
