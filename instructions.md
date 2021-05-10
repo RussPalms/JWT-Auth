@@ -114,3 +114,13 @@ In the header, the token MUST be preceeded by “Authorization: JWT “ + access
 
 35. Now you can build:
     -> npm run build
+    ******make sure the backend django server is running before your run the frontend
+
+36. Install react-router-dom. We use the -dom variant since we’re building a website, not an app:
+    -> npm install --save react-router-dom
+
+37. With the BrowserRouter imported and index.js updated to use it, the next step is to create another couple components we can render depending on the URLs. Make 2 new files: login.js and signup.js in components/. 
+
+38. Two forms are needed for Login and Signup. Signup has username, email, and password fields while login only needs username and password.
+
+39.
