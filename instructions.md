@@ -158,4 +158,6 @@ In the header, the token MUST be preceeded by “Authorization: JWT “ + access
 
 52. Next we need to add a button to our navbar to delete the localStorage tokens and to post the token to a blackout API view, which we will make shortly. This will go in App.js for now, but making a dedicated Nav component at this point also makes sense.
 
-53.
+53. Uninstalled react-router-dom and axios then reinstalled it while saving them to the development:
+    -> npm uninstall react-router-fom axios
+    -> npm install --save-dev react-router-dom axios
