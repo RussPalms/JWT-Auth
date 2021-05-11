@@ -28,93 +28,137 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.response.use(
     response => response,
-    error => {
-        const originalRequest = errot.config;
+        error => {
+            const originalRequest = error.config;
 
-        // bug fixes to prefent infinite loops
-        if (error.response.status 
-            === 404 && originalRequest.url 
-            === baseURL + 'token/refresh/') {
-                window.location.href = '/login/';
-                return Promise.reject(error);
-            }
-        
-            if (error.response.data.code === "token_not_valid" &&
-                error.response.status === 401 &&
-                error.response.statusText === "Unauthorized")
-                {
+            // bug fixes to prefent infinite loops
+            
+            // version 3 of fix
+            if (error.response.status 
+                === 401 && error.response.statusText 
+                === "Unauthorized" && error.response.data.code 
+                === "token_not_valid") {
                     const refreshToken = localStorage.getItem('refresh_token');
-
                     if (refreshToken) {
                         const tokenParts = JSON.parse(atob(refreshToken.split('.')[1]));
-
-                        // exp date in token is expressed in seconds, while now() returns
-                        // milliseconds:
-
+                        // exp date in token is expressed in seconds, while now() returns milliseconds:
                         const now = Math.ceil(Date.now() / 1000);
-                        console.log(tokenParts.exp);
-
                         if (tokenParts.exp > now) {
                             return axiosInstance
-                            .post('/token/refresh/', {refresh: refreshToken})
-                            .then((response) => {
+                                .post('/token/refresh/', {refresh: refreshToken})
+                                .then((response) => {
 
-                                localStorage.setItem('access_token', response.data.access);
-                                localStorage.setItem('refresh_token', response.data.refresh);
+                                    localStorage.setItem('access_token', response.data.access);
+                                    localStorage.setItem('refresh_token', response.data.refresh);
 
-                                axiosInstance.defaults.headers['Authorization'] 
-                                    = "JWT " + response.data.access;
-                                originalRequest.headers['Authorization']
-                                    = "JWT " + response.data.access;
-                                return axiosInstance(originalRequest);
-                            })
-                                .catch(err => {
-                                    console.log(err)
-                                });     
+                                    axiosInstance.defaults.headers['Authorization'] = 'JWT ' + response.data.access;
+                                    originalRequest.headers['Authorization'] = 'JWT ' + response.data.access;
+
+                                    return axiosInstance(originalRequest);
+                                })
+                                    .catch(err => {
+                                        console.log(err)
+                                    });
                         }
                             else {
                                 console.log("Refresh token is expired", tokenParts.exp, now);
-                                window.location.href = '/login/';
-                            }      
+                            }
                     }
                         else {
-                            console.log("Refresh token not available.")
-                            window.location.href = '/login/';
+                            console.log("no refresh token");
                         }
-                }
-                    // specific error handling done elsewhere
-                    // return Promise.reject(error);
+                } 
+                    // else error is different from 401
+                    return Promise.reject(error);
 
-        // // if (error.response.status === 401 && error.response.statusText === "Unauthorized") {
-        // if (localStorage.getItem('refresh_token') 
-        //     && error.response.status 
-        //     === 401 
-        //     && error.response.statusText 
-        //     === "Unauthorized") 
-        //     {
-        //         const refresh_token = localStorage.getItem('refresh_token');
+            // verion 2 of fix
 
-        //         return axiosInstance
-        //             .post('/token/refresh/', {refresh: refresh_token})
-        //             .then((response) => {
+            // if (error.response.status 
+            //     === 404 && originalRequest.url 
+            //     === baseURL + 'token/refresh/') {
+            //         window.location.href = '/login/';
+            //         return Promise.reject(error);
+            //     }
+            
+            //     if (error.response.data.code === "token_not_valid" &&
+            //         error.response.status === 401 &&
+            //         error.response.statusText === "Unauthorized")
+            //         {
+            //             const refreshToken = localStorage.getItem('refresh_token');
 
-        //                 localStorage.setItem('access_token', response.data.access);
-        //                 localStorage.setItem('refresh_token', response.data.refresh);
+            //             if (refreshToken) {
+            //                 const tokenParts = JSON.parse(atob(refreshToken.split('.')[1]));
 
-        //                 axiosInstance.defaults.headers['Authorization'] 
-        //                     = "JWT " + response.data.access;
-        //                 originalRequest.headers['Authorization'] 
-        //                     = "JWT " + response.data.access;
-                                
-        //                 return axiosInstance(originalRequest);
-        //             })
-        //                 .catch(err => {
-        //                     console.log(err)
-        //                 });
-        //     }
-        //     // return Promise.reject(error);
-            return Promise.reject({...error});
-    }
+            //                 // exp date in token is expressed in seconds, while now() returns
+            //                 // milliseconds:
+
+            //                 const now = Math.ceil(Date.now() / 1000);
+            //                 console.log(tokenParts.exp);
+
+            //                 if (tokenParts.exp > now) {
+            //                     return axiosInstance
+            //                     .post('/token/refresh/', {refresh: refreshToken})
+            //                     .then((response) => {
+
+            //                         localStorage.setItem('access_token', response.data.access);
+            //                         localStorage.setItem('refresh_token', response.data.refresh);
+
+            //                         axiosInstance.defaults.headers['Authorization'] 
+            //                             = "JWT " + response.data.access;
+            //                         originalRequest.headers['Authorization']
+            //                             = "JWT " + response.data.access;
+            //                         return axiosInstance(originalRequest);
+            //                     })
+            //                         .catch(err => {
+            //                             console.log(err)
+            //                         });     
+            //                 }
+            //                     else {
+            //                         console.log("Refresh token is expired", tokenParts.exp, now);
+            //                         window.location.href = '/login/';
+            //                     }      
+            //             }
+            //                 else {
+            //                     console.log("Refresh token not available.")
+            //                     window.location.href = '/login/';
+            //                 }
+            //         }
+            //             // specific error handling done elsewhere
+            //             // else error is different from 401
+            //             return Promise.reject(error);
+            
+            // version 1 of fix
+
+            // // // if (error.response.status === 401 && error.response.statusText === "Unauthorized") {
+            // // if (localStorage.getItem('refresh_token') 
+            // //     && error.response.status 
+            // //     === 401 
+            // //     && error.response.statusText 
+            // //     === "Unauthorized") 
+            // //     {
+            // //         const refresh_token = localStorage.getItem('refresh_token');
+
+            // //         return axiosInstance
+            // //             .post('/token/refresh/', {refresh: refresh_token})
+            // //             .then((response) => {
+
+            // //                 localStorage.setItem('access_token', response.data.access);
+            // //                 localStorage.setItem('refresh_token', response.data.refresh);
+
+            // //                 axiosInstance.defaults.headers['Authorization'] 
+            // //                     = "JWT " + response.data.access;
+            // //                 originalRequest.headers['Authorization'] 
+            // //                     = "JWT " + response.data.access;
+                                    
+            // //                 return axiosInstance(originalRequest);
+            // //             })
+            // //                 .catch(err => {
+            // //                     console.log(err)
+            // //                 });
+            // //     }
+            // //     // return Promise.reject(error);
+            //     // return Promise.reject({...error});
+        }
 );
 
 export default axiosInstance;

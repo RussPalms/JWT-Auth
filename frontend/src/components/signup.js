@@ -42,7 +42,7 @@ class Signup extends Component {
                     console.log(error.stack);
                     // added after creating an empty tuple for authenticated users in backend
                     this.setState({
-                        errors:error.response.data
+                        errors: error.response.data
                     });
                 }
     }
